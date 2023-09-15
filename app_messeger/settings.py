@@ -36,3 +36,6 @@ FORMAT_LOGGER = (
 )
 # адрес файла вывода логов
 FILE_LOGGER = BASE_DIR / 'application-log.log'
+
+USERS = {}
+MESSAGES = []
