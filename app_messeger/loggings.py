@@ -10,4 +10,5 @@ logging.basicConfig(
     filename=FILE_LOGGER,
     filemode='w'
 )
-logger = logging.getLogger('Мессенджер')
+logger_client = logging.getLogger('Клиент')
+logger_server = logging.getLogger('Сервер')
