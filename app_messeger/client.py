@@ -36,23 +36,36 @@ class Client:
             logger_client.error(f'Ошибка подключения: {ConnectionErrore}')
         except TimeoutError as TimeoutErrore:
             logger_client.error(f'Время истекло: {TimeoutErrore}')
-        logger_client.error(f'Сброс подключения к серверу: {self.host}, {self.port}')
+        except KeyboardInterrupt:
+            logger_client.error('Подключение к серверу сброшено пользователем!')
+            await aprint('Подключение к серверу сброшено пользователем!')
+            await sleep(1)
+        finally:
+            asyncio.ensure_future(asyncio.shield(self.writer.wait_closed()))
+            self.writer.close()
+            await self.writer.wait_closed()
+            logger_client.error(f'Сброс пользователем подключения к серверу: {self.host}, {self.port}')
+            await aprint(f'\n Сброс пользователем подключения к серверу: {self.host}, {self.port}')
+            await sleep(1)
 
     async def send(self, message=''):
         """Отправка сообщения"""
         while message != 'quit':
-            message = await ainput('>>> ')
-            self.writer.write(message.encode('utf8'))
+            message = await ainput()
+            self.writer.write(message.encode('utf-8'))
             await self.writer.drain()
             logger_client.info(f'Исходящее сообщение: {message}')
 
     async def receive(self):
         """Получение сообщения"""
-        data = await self.reader.read(BUFSIZE)
-        message = data.decode('utf8')
-        logger_client.info(f'Входящее сообщение: {message}')
-        await aprint(f'{data} \n')
-        await sleep(1)
+        while True:
+            data = await self.reader.read(BUFSIZE)
+            if not data:
+                break
+            message = data.decode('utf-8')
+            logger_client.info(f'Входящее сообщение: {message}')
+            await aprint(f'{message}')
+            await sleep(1)
 
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ logging.basicConfig(
     level=logging.INFO,
     datefmt=DATETIME_FORMAT,
     filename=FILE_LOGGER,
-    filemode='w'
+    filemode='a'
 )
 logger_client = logging.getLogger('Клиент')
 logger_server = logging.getLogger('Сервер')
