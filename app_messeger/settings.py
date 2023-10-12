@@ -34,8 +34,10 @@ DATETIME_FORMAT = '%Y-%m-%d_%H-%M-%S'
 FORMAT_LOGGER = (
     '%(asctime)s | %(name)s | %(levelname)s | %(message)s'
 )
-# адрес файла вывода логов
-FILE_LOGGER = BASE_DIR / 'application-log.log'
+# директория для файлов логов
+DIR_LOGS = BASE_DIR / 'logs'
+# адрес файла вывода логов сервера
+FILE_LOGGER_SERVER = DIR_LOGS / 'server-application-log.log'
 
 USERS = {}
-MESSAGES = []
+MESSAGES = [111, 222, 333, 444, 555, 666, 777, 888, 999]
