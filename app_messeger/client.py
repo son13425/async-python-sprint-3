@@ -41,9 +41,9 @@ class Client:
                 self.port
             )
             logger_client.info(
-                f'Подключились к серверу: {self.host}, {self.port}'
+                f'Подключились к серверу: {self.host}:{self.port}'
             )
-            await aprint(f'Подключились к серверу: {self.host}, {self.port}')
+            await aprint(f'Подключились к серверу: {self.host}:{self.port}')
             await sleep(1)
             await gather(
                 self.send(),
@@ -54,15 +54,30 @@ class Client:
         except TimeoutError as TimeoutErrore:
             logger_client.error(f'Время истекло: {TimeoutErrore}')
         finally:
-            logger_client.error(f'Сброс пользователем подключения к серверу: {self.host}, {self.port}')
+            logger_client.error(
+                'Сброс пользователем подключения к серверу: '
+                f'{self.host}:{self.port}')
 
-    async def send(self, message=''):
+    async def send(self):
         """Отправка сообщения"""
-        while message != 'quit':
+        while True:
             message = await ainput()
             self.writer.write(message.encode('utf-8'))
             await self.writer.drain()
             logger_client.info(f'Исходящее сообщение: {message}')
+            if message == 'quit':
+                self.writer.close()
+                await self.writer.wait_closed()
+                await aprint(
+                    'Вышли из чата: соединение с сервером '
+                    f'{self.host}:{self.port} сброшено'
+                )
+                await sleep(1)
+                logger_client.warning(
+                    'Вышли из чата: соединение с сервером '
+                    f'{self.host}:{self.port} сброшено'
+                )
+                break
 
     async def receive(self):
         """Получение сообщения"""

@@ -39,5 +39,9 @@ DIR_LOGS = BASE_DIR / 'logs'
 # адрес файла вывода логов сервера
 FILE_LOGGER_SERVER = DIR_LOGS / 'server-application-log.log'
 
+# зарегистрированные пользователи общего чата
 USERS = {}
-MESSAGES = [111, 222, 333, 444, 555, 666, 777, 888, 999]
+# offline-пользователи общего чата
+USERS_OFFLINE = {}
+# сообщения общего чата
+MESSAGES = []
