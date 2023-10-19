@@ -19,8 +19,8 @@ PERIOD_LIFETIME_MESSAGES = 3600
 ## настройки общего чата
 # максимальное количество сообщений за период
 LIMIT_MESSAGES = 20
-# период
-PERIOD_LIMIT_MESSAGES = 3600
+# период, секунд
+PERIOD_LIMIT_MESSAGES = 600
 # лимит предупреждений перед баном
 WARNING_LIMIT = 3
 # период бана
@@ -40,8 +40,14 @@ DIR_LOGS = BASE_DIR / 'logs'
 FILE_LOGGER_SERVER = DIR_LOGS / 'server-application-log.log'
 
 # зарегистрированные пользователи общего чата
+# {<obj 'User'>: 'user.name'}
 USERS = {}
 # offline-пользователи общего чата
+# {'user.name': <datetime>}
 USERS_OFFLINE = {}
 # сообщения общего чата
+# [str]
 MESSAGES = []
+# счетчик сообщений пользователя в чате
+# {'user.name': int}
+MESSAGE_COUNTER = {}
