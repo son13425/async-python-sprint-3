@@ -1,10 +1,12 @@
 import logging
 import os
+from pathlib import Path
 
-from settings import DATETIME_FORMAT, DIR_LOGS, FILE_LOGGER_SERVER, FORMAT_LOGGER
+from .settings import (DATETIME_FORMAT, DIR_LOGS, FILE_LOGGER_SERVER,
+                       FORMAT_LOGGER)
 
 
-def check_dir_logs(url_dir_logs: str = DIR_LOGS):
+def check_dir_logs(url_dir_logs: Path = DIR_LOGS):
     """Проверить существование директории для log-файлов"""
     if os.path.exists(url_dir_logs):
         return

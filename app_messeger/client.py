@@ -1,12 +1,14 @@
 import asyncio
-from asyncio import StreamReader, StreamWriter, sleep, gather, open_connection, CancelledError
-from settings import HOST, PORT, BUFSIZE
-from aioconsole import ainput, aprint
-from contextlib import suppress
 import logging
-from settings import DATETIME_FORMAT, DIR_LOGS, FORMAT_LOGGER
 import uuid
+from asyncio import (CancelledError, StreamReader, StreamWriter, gather,
+                     open_connection, sleep)
+from contextlib import suppress
 
+from aioconsole import ainput, aprint
+
+from .settings import (BUFSIZE, DATETIME_FORMAT, DIR_LOGS, FORMAT_LOGGER, HOST,
+                       PORT)
 
 UID_CLIENT = str(uuid.uuid4())[-4:]
 FILE_LOGGER_CLIENT = DIR_LOGS / f'{UID_CLIENT}-client-log.log'
@@ -27,13 +29,13 @@ class Client:
             self,
             server_host='127.0.0.1',
             server_port=8000
-    ):
+    ) -> None:
         self.host = server_host
         self.port = server_port
         self.reader: StreamReader = None
         self.writer: StreamWriter = None
 
-    async def connection(self):
+    async def connection(self) -> None:
         """Подключение к серверу"""
         try:
             self.reader, self.writer = await open_connection(
@@ -58,7 +60,7 @@ class Client:
                 'Сброс пользователем подключения к серверу: '
                 f'{self.host}:{self.port}')
 
-    async def send(self):
+    async def send(self) -> None:
         """Отправка сообщения"""
         while True:
             message = await ainput()
@@ -79,7 +81,7 @@ class Client:
                 )
                 break
 
-    async def receive(self):
+    async def receive(self) -> None:
         """Получение сообщения"""
         while True:
             data = await self.reader.read(BUFSIZE)
@@ -91,7 +93,8 @@ class Client:
             await sleep(1)
 
 
-async def main():
+async def main() -> None:
+    """Обработка ошибки прерывания связи"""
     with suppress(CancelledError):
         client = Client(HOST, PORT)
         await client.connection()
