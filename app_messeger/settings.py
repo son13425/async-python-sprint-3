@@ -1,7 +1,7 @@
 from datetime import datetime
 from pathlib import Path
 
-from .server import User
+from server import User
 
 # настройки подключения
 HOST: str = '127.0.0.1'

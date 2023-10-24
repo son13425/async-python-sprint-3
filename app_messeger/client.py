@@ -6,9 +6,8 @@ from asyncio import (CancelledError, StreamReader, StreamWriter, gather,
 from contextlib import suppress
 
 from aioconsole import ainput, aprint
-
-from .settings import (BUFSIZE, DATETIME_FORMAT, DIR_LOGS, FORMAT_LOGGER, HOST,
-                       PORT)
+from settings import (BUFSIZE, DATETIME_FORMAT, DIR_LOGS, FORMAT_LOGGER, HOST,
+                      PORT)
 
 UID_CLIENT = str(uuid.uuid4())[-4:]
 FILE_LOGGER_CLIENT = DIR_LOGS / f'{UID_CLIENT}-client-log.log'

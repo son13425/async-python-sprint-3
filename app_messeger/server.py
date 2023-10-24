@@ -4,12 +4,11 @@ from datetime import datetime
 from typing import Any
 
 from aioconsole import aprint
-
-from .loggings import logger_server
-from .settings import (BUFSIZE, DATETIME_FORMAT, HOST, LIMIT_MESSAGES,
-                       MESSAGE_COUNTER, MESSAGES, NUMBER_MESSAGES_GENERAL_CHAT,
-                       PERIOD_LIFETIME_MESSAGES, PERIOD_LIMIT_MESSAGES, PORT,
-                       USERS, USERS_OFFLINE)
+from loggings import logger_server
+from settings import (BUFSIZE, DATETIME_FORMAT, HOST, LIMIT_MESSAGES,
+                      MESSAGE_COUNTER, MESSAGES, NUMBER_MESSAGES_GENERAL_CHAT,
+                      PERIOD_LIFETIME_MESSAGES, PERIOD_LIMIT_MESSAGES, PORT,
+                      USERS, USERS_OFFLINE)
 
 
 class Server:
@@ -311,7 +310,10 @@ class Server:
                         message
                     )
                     for reg_user_device in reg_user_devices:
-                        await self.send(reg_user_device.writer, message_warning)
+                        await self.send(
+                            reg_user_device.writer,
+                            message_warning
+                        )
                     logger_server.info(
                         f'Лимит сообщений пользователя {name} исчерпан'
                     )
