@@ -6,6 +6,7 @@ from asyncio import (CancelledError, StreamReader, StreamWriter, gather,
 from contextlib import suppress
 
 from aioconsole import ainput, aprint
+
 from settings import (BUFSIZE, DATETIME_FORMAT, DIR_LOGS, FORMAT_LOGGER, HOST,
                       PORT)
 
@@ -87,9 +88,24 @@ class Client:
             if not data:
                 break
             message = data.decode('utf-8')
-            logger_client.info(f'Входящее сообщение: {message}')
-            await aprint(f'{message}')
-            await sleep(1)
+            if message == 'quit':
+                self.writer.close()
+                await self.writer.wait_closed()
+                await aprint(
+                    'Вышли из чата: сервер '
+                    f'{self.host}:{self.port} off-line'
+                )
+                await sleep(1)
+                logger_client.warning(
+                    'Вышли из чата: сервер '
+                    f'{self.host}:{self.port} off-line'
+                )
+                self.writer.write('ok'.encode('utf-8'))
+                break
+            else:
+                logger_client.info(f'Входящее сообщение: {message}')
+                await aprint(f'{message}')
+                await sleep(1)
 
 
 async def main() -> None:

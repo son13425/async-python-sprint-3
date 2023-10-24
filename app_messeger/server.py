@@ -3,12 +3,14 @@ from asyncio import (StreamReader, StreamWriter, create_task, run, sleep,
 from datetime import datetime
 from typing import Any
 
-from aioconsole import aprint
+from aioconsole import ainput, aprint
+
 from loggings import logger_server
 from settings import (BUFSIZE, DATETIME_FORMAT, HOST, LIMIT_MESSAGES,
                       MESSAGE_COUNTER, MESSAGES, NUMBER_MESSAGES_GENERAL_CHAT,
                       PERIOD_LIFETIME_MESSAGES, PERIOD_LIMIT_MESSAGES, PORT,
                       USERS, USERS_OFFLINE)
+from user_model import User
 
 
 class Server:
@@ -39,6 +41,22 @@ class Server:
             update_counter_messages.add_done_callback(
                 self.task_done_set.discard
             )
+            while True:
+                message = await ainput()
+                if message != 'quit':
+                    continue
+                for user in USERS:
+                    if user in USERS_OFFLINE:
+                        continue
+                    await self.send(user.writer, 'quit')
+                server.close()
+                await server.wait_closed()
+                await aprint('Сервер остановлен администратором!')
+                await sleep(1)
+                logger_server.warning(
+                    'Сервер остановлен администратором!'
+                )
+                break
             async with server:
                 await server.serve_forever()
         except KeyboardInterrupt:
@@ -469,42 +487,6 @@ class Server:
             DATETIME_FORMAT
         )
         return message_time
-
-
-class User:
-    """Модель юзера (клиента)"""
-    def __init__(
-        self,
-        reader: StreamReader,
-        writer: StreamWriter,
-        name: str,
-        password: str
-    ) -> None:
-        self.reader: StreamReader = reader
-        self.writer: StreamWriter = writer
-        self.name: str = name
-        self.password: str = password
-        self.time_start: datetime = datetime.now()
-
-    def reader(
-        self
-    ) -> StreamReader:
-        return self.reader
-
-    def writer(
-        self
-    ) -> StreamWriter:
-        return self.writer
-
-    def name(
-        self
-    ) -> str:
-        return self.name
-
-    def password(
-        self
-    ) -> str:
-        return self.password
 
 
 if __name__ == '__main__':
