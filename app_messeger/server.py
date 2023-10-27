@@ -4,12 +4,11 @@ from datetime import datetime
 from typing import Any
 
 from aioconsole import ainput, aprint
-
 from loggings import logger_server
-from settings import (BUFSIZE, DATETIME_FORMAT, HOST, LIMIT_MESSAGES,
+from settings import (DATETIME_FORMAT, LIMIT_MESSAGES,
                       MESSAGE_COUNTER, MESSAGES, NUMBER_MESSAGES_GENERAL_CHAT,
-                      PERIOD_LIFETIME_MESSAGES, PERIOD_LIMIT_MESSAGES, PORT,
-                      USERS, USERS_OFFLINE)
+                      PERIOD_LIFETIME_MESSAGES, PERIOD_LIMIT_MESSAGES,
+                      USERS, USERS_OFFLINE, connect)
 from user_model import User
 
 
@@ -84,14 +83,14 @@ class Server:
             'Ваш login:'
         )
         await self.send(writer, login_request)
-        data = await reader.read(BUFSIZE)
+        data = await reader.read(connect.bufsize)
         name = data.decode('utf-8')
         password_request = await self.create_message(
             'Bot',
             'пароль: '
         )
         await self.send(writer, password_request)
-        data_password = await reader.read(BUFSIZE)
+        data_password = await reader.read(connect.bufsize)
         password = data_password.decode('utf-8')
         user = User(reader, writer, name, password)
         await self.input_selection(user)
@@ -106,7 +105,7 @@ class Server:
             'Войти: 1; Зарегистрироваться: 2; Выйти: "quit"'
         )
         await self.send(user.writer, input_request)
-        data_input = await user.reader.read(BUFSIZE)
+        data_input = await user.reader.read(connect.bufsize)
         response_input = data_input.decode('utf-8')
         if response_input == '1':
             if user.name in USERS.values():
@@ -284,7 +283,7 @@ class Server:
         """Прослушивание и обработка сообщений от клиента"""
         while True:
             name = str(user.name)
-            data = await user.reader.read(BUFSIZE)
+            data = await user.reader.read(connect.bufsize)
             if not data:
                 break
             message = data.decode('utf-8')
@@ -437,9 +436,7 @@ class Server:
         на все зарегистрированные устройства пользователя
         """
         for user_devices in reg_user_devices:
-            if user_devices in USERS_OFFLINE:
-                continue
-            elif user_devices == user:
+            if user_devices in USERS_OFFLINE or user_devices == user:
                 continue
             await self.send(user_devices.writer, message)
 
@@ -490,5 +487,5 @@ class Server:
 
 
 if __name__ == '__main__':
-    server = Server(HOST, PORT)
+    server = Server(connect.host, connect.port)
     run(server.start())

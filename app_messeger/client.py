@@ -6,9 +6,7 @@ from asyncio import (CancelledError, StreamReader, StreamWriter, gather,
 from contextlib import suppress
 
 from aioconsole import ainput, aprint
-
-from settings import (BUFSIZE, DATETIME_FORMAT, DIR_LOGS, FORMAT_LOGGER, HOST,
-                      PORT)
+from settings import DATETIME_FORMAT, DIR_LOGS, FORMAT_LOGGER, connect
 
 UID_CLIENT = str(uuid.uuid4())[-4:]
 FILE_LOGGER_CLIENT = DIR_LOGS / f'{UID_CLIENT}-client-log.log'
@@ -84,7 +82,7 @@ class Client:
     async def receive(self) -> None:
         """Получение сообщения"""
         while True:
-            data = await self.reader.read(BUFSIZE)
+            data = await self.reader.read(connect.bufsize)
             if not data:
                 break
             message = data.decode('utf-8')
@@ -111,7 +109,7 @@ class Client:
 async def main() -> None:
     """Обработка ошибки прерывания связи"""
     with suppress(CancelledError):
-        client = Client(HOST, PORT)
+        client = Client(connect.host, connect.port)
         await client.connection()
 
 

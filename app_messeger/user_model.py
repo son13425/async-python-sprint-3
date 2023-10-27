@@ -11,28 +11,32 @@ class User:
         name: str,
         password: str
     ) -> None:
-        self.reader: StreamReader = reader
-        self.writer: StreamWriter = writer
-        self.name: str = name
-        self.password: str = password
+        self._reader: StreamReader = reader
+        self._writer: StreamWriter = writer
+        self._name: str = name
+        self._password: str = password
         self.time_start: datetime = datetime.now()
 
+    @property
     def reader(
         self
     ) -> StreamReader:
-        return self.reader
+        return self._reader
 
+    @property
     def writer(
         self
     ) -> StreamWriter:
-        return self.writer
+        return self._writer
 
+    @property
     def name(
         self
     ) -> str:
-        return self.name
+        return self._name
 
+    @property
     def password(
         self
     ) -> str:
-        return self.password
+        return self._password

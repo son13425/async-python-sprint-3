@@ -1,15 +1,26 @@
 from datetime import datetime
 from pathlib import Path
 
+from pydantic.v1 import BaseSettings, Field
 from user_model import User
-
-# настройки подключения
-HOST: str = '127.0.0.1'
-PORT: int = 8000
-BUFSIZE: int = 1024
 
 # базовая директория
 BASE_DIR: Path = Path(__file__).parent
+
+
+# настройки подключения
+class ConnectionSettings(BaseSettings):
+    """Настройки подключения"""
+    host: str = Field(default='127.0.0.1')
+    port: int = Field(default=8000)
+    bufsize: int = Field(default=1024)
+
+    class Config:
+        allow_mutation = False
+        secrets_dir = BASE_DIR / 'secrets'
+
+
+connect = ConnectionSettings()
 
 # количество доступных новому клиенту последних cообщений из общего чата
 NUMBER_MESSAGES_GENERAL_CHAT: int = 20
